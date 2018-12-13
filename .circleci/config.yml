@@ -68,6 +68,23 @@ jobs:
             circleci-bundle-update-pr pipopotamasu ec0156hx@gmail.com master -d
           no_output_timeout: 1h
           when: always
+  
+  yarn_upgrade:
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: run yarn upgrade
+          command: |
+            yarn global add ci-yarn-upgrade
+            GIT_USER_NAME=pipopotamasu GIT_USER_EMAIL=ec0156hx@gmail.com GITHUB_ACCESS_TOKEN=${GITHUB_ACCESS_TOKEN} ci-yarn-upgrade --execute --verbose --latest
+      - run:
+          name: run slack to next_yarn_upgrader
+          command: .circleci/bin/next_bundle_updater
+          when: always
 
 workflows:
   version: 2
@@ -79,7 +96,19 @@ workflows:
             - build
     triggers:
       - schedule:
-        cron: "0 13 10 * *" # JST: 22:00
+        cron: "0 1 14 * *" # JST: 22:00
+        filters:
+          branches:
+            only: master
+  build_and_yarn_upgrade:
+    jobs:
+      - build
+      - yarn_upgrade:
+          requires:
+            - build
+    triggers:
+      - schedule:
+        cron: "0 1 14 * *" # JST: 22:00
         filters:
           branches:
             only: master
