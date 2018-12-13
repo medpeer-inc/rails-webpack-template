@@ -77,9 +77,9 @@ workflows:
       - bundle_update:
           requires:
             - build
-    # triggers:
-    #   - schedule:
-    #     cron: "0 13 10 * *" # JST: 22:00
-    #     # filters:
-    #     #   branches:
-    #     #     only: master
+    triggers:
+      - schedule:
+        cron: "0 13 10 * *" # JST: 22:00
+        filters:
+          branches:
+            only: master
