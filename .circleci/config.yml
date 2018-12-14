@@ -29,10 +29,6 @@ jobs:
           name: install dependencies
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
-            # bundle configがなぜかできないため自力で作成する
-            mkdir .bundle
-            touch .bundle/config
-            echo "BUNDLE_PATH: vendor/bundle/" >> .bundle/config
             yarn install
 
       - run:
@@ -60,6 +56,8 @@ jobs:
       - run:
           name: run tests
           command: |
+            # これがないとbundlerがvendor/bundleに向いてくれない。なぜ...?。.bundle/config作ってがvendor/bundleに向けるように書いてもダメだった。
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
             mkdir /tmp/test-results
             TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
             bundle exec rspec $TEST_FILES
