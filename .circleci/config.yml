@@ -29,6 +29,10 @@ jobs:
           name: install dependencies
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
+            # bundle configがなぜかできないため自力で作成する
+            mkdir .bundle
+            touch .bundle/config
+            echo "BUNDLE_PATH: vendor/bundle/" >> .bundle/config
             yarn install
 
       - run:
