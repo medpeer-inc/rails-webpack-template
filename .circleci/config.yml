@@ -95,7 +95,7 @@ workflows:
   build_and_rspec:
     jobs:
       - build
-      - bundle_update:
+      - rspec:
           requires:
             - build
   build_and_bundle_update:
