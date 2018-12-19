@@ -37,6 +37,28 @@ $ bin/rails app:template LOCATION=path/to/tmp/rails-webpack-template/template.rb
 ## 手段3: 手動で移植する
 [この差分](https://github.com/medpeer-inc/rails-webpack-template/compare/fd72d963b1b700031104c78956a61877afb6269f...master)を人力で移植してください。30分あれば終わると思います。
 
+# SSL(HTTPS)対応
+おそらくほとんどのプロジェクトでオレオレ証明書を用いたエセSSL環境下で開発環境を構築すると思います。
+その場合、初期状態ではwebpack-dev-serverは動きません。webpack-dev-serverをSSLに対応させる必要があります(大丈夫、簡単です)。
+
+## STEP1: webpack-dev-serverをHTTPSで起動させる
+以下ファイルのコメントアウトを解除してください。
+https://github.com/medpeer-inc/rails-webpack-template/blob/cc63424a8a6a65c249d2df9583c50b70903fd9e3/webpack.dev.js#L10
+
+## STEP2: manifest.jsonのURIを変える
+以下ファイルのコメントアウトを解除してください。そしてhttpの方を削除してください。
+https://github.com/medpeer-inc/rails-webpack-template/blob/cc63424a8a6a65c249d2df9583c50b70903fd9e3/app/helpers/webpack_bundle_helper.rb#L71
+
+## STEP3: railsのコンテナの3035番ポートを開ける
+railsのDockerfileもしくはdocker-compose.ymlで、3035番ポートを開けるように記述してください。
+```
+# docker-compose.ymlの場合
+
+ports:
+  - "3035:3035"
+
+```
+
 # どうやって使えばいいのか?
 ## ざっくり編
 ざっくりした使い方は以下ファイルを見て貰えるとざっくりわかると思います。
